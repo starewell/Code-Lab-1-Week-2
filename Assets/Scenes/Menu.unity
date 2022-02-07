@@ -2403,20 +2403,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988eefe18a178ef43a71fe640049791d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabs:
-  - {fileID: 5042294112513554963, guid: a64e83d423edf8446ac0980c6d96d033, type: 3}
-  colors:
-  - {fileID: 2100000, guid: 79bb0117d6d7e844784c29c202e97529, type: 2}
-  - {fileID: 2100000, guid: 65b936fb9bbe5b6438612bd317bd5029, type: 2}
-  - {fileID: 2100000, guid: 71f53045c1fa4b740b150d484e524b4c, type: 2}
-  gridDim: {x: 3, y: 3}
-  tileSize: 1
-  spawnPercentRed: 0.333
-  spawnPercentGreen: 0.333
-  spawnPercentBlue: 0.333
-  goalPercentRed: 1
-  goalPercentGreen: 1
-  goalPercentBlue: 1
   grid: {fileID: 0}
 --- !u!114 &985075071
 MonoBehaviour:
@@ -2432,7 +2418,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridDef: {fileID: 11400000, guid: 08f5e8b96fb5145459db3a8bb17d2387, type: 2}
   hexGridContents: []
-  generator: {fileID: 0}
 --- !u!1 &1008476657
 GameObject:
   m_ObjectHideFlags: 0
@@ -7161,7 +7146,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5042294111991825940}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -4}
+  m_LocalPosition: {x: 1.5, y: 0, z: -4}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1155}
   m_Children: []
   m_Father: {fileID: 175637399}
@@ -7180,7 +7165,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5042294113302962547}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.5, y: 0, z: -4}
+  m_LocalPosition: {x: 0, y: 0, z: -4}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1155}
   m_Children: []
   m_Father: {fileID: 175637399}
