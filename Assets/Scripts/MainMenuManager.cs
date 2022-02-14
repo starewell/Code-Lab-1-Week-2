@@ -47,7 +47,7 @@ public class MainMenuManager : MonoBehaviour {
     }
 //Starts grid degen and wait until it finishes
      public void TriggerReturnToLevelSelect() {
-        grid.DegenerateGrid();
+        grid.DegenerateGrid(false);
         StartCoroutine(WaitToReturn());
      }
 //Sets anims for transitioning to level select page after waiting

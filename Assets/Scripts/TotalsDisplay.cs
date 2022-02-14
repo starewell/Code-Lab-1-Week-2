@@ -1,4 +1,4 @@
-using System.Collections;
+	using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +22,8 @@ public class TotalsDisplay : MonoBehaviour {
 //Event for announcments, win
 	public delegate void OnEndCondition();
 	public event OnEndCondition OnWinCallback;
+	bool called = false;
+
 //My singleton
 	public static TotalsDisplay instance;
 	void Awake() { 
@@ -38,7 +40,7 @@ public class TotalsDisplay : MonoBehaviour {
 		grid.GridCalculatedCallback += TogglePanel;	//Events which trigger UI updates
 		grid.GridCalculatedCallback += UpdateGoals;
 		grid.TotalsChangeCallback += UpdateTotals;
-		grid.GridDestroyedCallback += TogglePanel;
+		grid.LevelEndCallback += TogglePanel;
 
 		anim = GetComponent<Animator>();
 	}
@@ -77,10 +79,11 @@ bool firstCheck; //Used so that a win is not called on the origin TileFlip
 		UpdateDisplay();
 
         if (values[0] >= goals[0] && values[1] >= goals[1] && values[2] >= goals[2]) {
-			if (firstCheck) firstCheck = false;
-			else {
+			if (firstCheck) firstCheck = false; // this feels very sneaky
+			else if (!called) {
+				called = true;
 				OnWinCallback?.Invoke();
-				grid.DegenerateGrid();
+				grid.DegenerateGrid(true);
 			}
         } else {
 			firstCheck = true;

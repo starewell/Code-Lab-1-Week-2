@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 1-4
   m_EditorClassIdentifier: 
   level: 1
+  unlocks: 2-1
   prefabs:
   - {fileID: 5042294112513554963, guid: a64e83d423edf8446ac0980c6d96d033, type: 3}
   colors:

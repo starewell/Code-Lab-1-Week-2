@@ -10,15 +10,18 @@ public class TileButton : Interactable {
 	public AudioSource audioSource;
 	Animator anim;
 	Button button; //...Passing executable functions through unity button rather than hardcoded reference... why is this bad
+	[SerializeField] Animator padlock;
 
 	public override void Start() {
         base.Start();
 
-        active = true;
 		anim = GetComponent<Animator>();
 		anim.SetBool("Destroy", false);
 
-		button = GetComponent<Button>(); 
+		button = GetComponent<Button>();
+
+		if (active) padlock.gameObject.SetActive(false);
+		else padlock.gameObject.SetActive(true);
 	}
 
     public override void Interact() {
@@ -37,5 +40,12 @@ public class TileButton : Interactable {
 		audioSource.Play();
 		anim.SetBool("Flip", false);
 		button.onClick.Invoke();
+	}
+
+	public void Unlock() {
+		if(!padlock.GetBool("Unlock")) {
+			padlock.SetBool("Unlock", true);
+		}
+		active = true;
 	}
 }

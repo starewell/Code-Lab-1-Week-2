@@ -13,8 +13,10 @@ public class TileGrid : MonoBehaviour {
     public event OnGridChange GridCalculatedCallback;
     public event OnGridChange GridGeneratedCallback;
     public event OnGridChange TotalsChangeCallback;
-    public event OnGridChange GridDestroyedCallback;
     public event OnGridChange LevelEndCallback;
+
+    public delegate void OnGridCondition(string lvl);
+    public event OnGridCondition GridSolvedCallback;
 //
     public List<HexSpace> hexGridContents = new List<HexSpace>();  //Stored list of all tiles in grid; HexSpaces
 
@@ -48,11 +50,14 @@ public class TileGrid : MonoBehaviour {
         UnlockHexGrid();
     }
 //
-//Trigger generator, lock grid, signal to TotalsDisplay to update
-    public void DegenerateGrid() {
+//Trigger generator, lock grid
+    public void DegenerateGrid(bool win) {
         LockHexGrid();
         generator.StartGridDegeneration(gridDef);
-        GridDestroyedCallback?.Invoke(0, 0, 0);        
+           
+        if (win) {
+            GridSolvedCallback?.Invoke(gridDef.unlocks);
+        }
     }
 //
 //Trigger GameManager from generator call
