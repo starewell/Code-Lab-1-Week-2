@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class ChangeMaterial : MonoBehaviour
+//Simple animation script for changing renderer material anim variables and active state
+public class PadlockAnimation : MonoBehaviour
 {
     [SerializeField] Material[] materials;
+    [SerializeField] AudioSource audioSource;
     int currentMatIndex;
     
     public void CycleToNextMat() {
@@ -15,5 +16,9 @@ public class ChangeMaterial : MonoBehaviour
 
     public void DisableGameObject() {
         this.gameObject.SetActive(false);
+    }
+
+    public void PlayAudio() {
+        audioSource.Play();
     }
 }

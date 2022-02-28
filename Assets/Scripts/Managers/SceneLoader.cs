@@ -34,7 +34,8 @@ public class SceneLoader : MonoBehaviour {
         StartCoroutine(FadeInCam());
         
     }
-//Subscribed function to SceneLoaded callback, invokes its own callback for other scripts to reference -- mostly GameManager rn
+//Subscribed function to SceneLoaded callback, invokes its own callback for other DoNotDestroy scripts to reference -- mostly GameManager rn
+//Is this redundent? Is it more efficent to just use the UnityEngine.SceneManagement library in each script I want to subscribe to the SceneLoaded callback?
     void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         SceneLoadedCallback?.Invoke();
 

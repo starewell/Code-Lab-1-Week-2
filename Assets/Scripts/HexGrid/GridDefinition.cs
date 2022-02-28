@@ -9,7 +9,7 @@ public class GridDefinition : ScriptableObject {
 
     //Definitions for the grid generation reference
     public bool level;
-    public string unlocks;
+    public string[] unlocks;
 
     public GameObject[] prefabs;
     public Material[] colors;

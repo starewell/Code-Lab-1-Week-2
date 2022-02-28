@@ -7,14 +7,14 @@ using UnityEngine.UI;
 public class Announcements : MonoBehaviour {
 
     TileGrid grid;
-    TotalsDisplay totals;
+    LevelUI totals;
 
     public GameObject[] barkPanels; //BarkPanel prefabs, different announcments
 
     void Start() {
         grid = TileGrid.instance;
         grid.GridGeneratedCallback += OnGridGenerated;
-        totals = TotalsDisplay.instance;
+        totals = LevelUI.instance;
         totals.OnWinCallback += OnWin;
         //totals.OnLoseCallback += OnLose;
         foreach (GameObject go in barkPanels) {

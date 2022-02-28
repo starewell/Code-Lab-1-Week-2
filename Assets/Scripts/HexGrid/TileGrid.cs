@@ -15,7 +15,7 @@ public class TileGrid : MonoBehaviour {
     public event OnGridChange TotalsChangeCallback;
     public event OnGridChange LevelEndCallback;
 
-    public delegate void OnGridCondition(string lvl);
+    public delegate void OnGridCondition(string[] lvl);
     public event OnGridCondition GridSolvedCallback;
 //
     public List<HexSpace> hexGridContents = new List<HexSpace>();  //Stored list of all tiles in grid; HexSpaces
@@ -54,9 +54,13 @@ public class TileGrid : MonoBehaviour {
     public void DegenerateGrid(bool win) {
         LockHexGrid();
         generator.StartGridDegeneration(gridDef);
-           
+
         if (win) {
-            GridSolvedCallback?.Invoke(gridDef.unlocks);
+            string[] lvls = new string[gridDef.unlocks.Length];
+            for (int i = 0; i < gridDef.unlocks.Length; i++) {
+                lvls[i] = gridDef.unlocks[i];
+            }
+            GridSolvedCallback?.Invoke(lvls);
         }
     }
 //
@@ -87,12 +91,16 @@ public class TileGrid : MonoBehaviour {
         UpdateHexGrid();
     }
 
-
-    public void UpdateHexSpace(HexSpace space) {
-
-
-        UpdateHexGrid();
+    IEnumerator FlipAdjacentHexes(Vector2[] adjacentCoord) { 
+        foreach (Vector2 coord in adjacentCoord) {
+            if (hexGridContents.Find(space => space.coordinate == coord) != null) { //Found this constructor thru microsoft docs, have never used it before
+                HexSpace adjSpace = hexGridContents.Find(space => space.coordinate == coord);
+                StartCoroutine(adjSpace.GetComponent<TileFlip>().FlipTile(false));
+                yield return new WaitForSeconds(.1f);
+            }
+        }
     }
+
 //
 //Function is executed through delegate event from the TileFlip class, calculates adjacent hex spaces and exectues TileFlip.FlipTile();
     void UpdateAdjacent(HexSpace space) {
@@ -117,13 +125,7 @@ public class TileGrid : MonoBehaviour {
             new Vector2(originCoord.x, originCoord.y+1),
             new Vector2(originCoord.x+1, originCoord.y)};
         }
-        foreach (Vector2 coord in adjacentCoord) {
-            if (hexGridContents.Find(space => space.coordinate == coord) != null) { //Found this constructor thru microsoft docs, have never used it before
-                HexSpace adjSpace = hexGridContents.Find(space => space.coordinate == coord);
-                StartCoroutine(adjSpace.GetComponent<TileFlip>().FlipTile(false));
-            }
-        }
-
+        StartCoroutine(FlipAdjacentHexes(adjacentCoord));
     }
 //
 //Useless middleman, maybe one day!

@@ -23,13 +23,13 @@ public class TileButton : Interactable {
 		if (active) padlock.gameObject.SetActive(false);
 		else padlock.gameObject.SetActive(true);
 	}
-
+//When base class detects an interact function
     public override void Interact() {
         base.Interact();
 
 		StartCoroutine(FlipTile());
     }
-
+//Animate tile and invoke event for result
 	public IEnumerator FlipTile() {
 		active = true;
 		StartCoroutine(hover.Deactivate());
@@ -41,11 +41,21 @@ public class TileButton : Interactable {
 		anim.SetBool("Flip", false);
 		button.onClick.Invoke();
 	}
-
-	public void Unlock() {
-		if(!padlock.GetBool("Unlock")) {
-			padlock.SetBool("Unlock", true);
+//Set the button as active or inactive and toggle anim state
+	public void ChangeLockState(bool state) { 
+		if (state) {
+			padlock.gameObject.SetActive(state);
+			padlock.SetBool("Unlock", !state);
+			active = !state;
+		} else {
+			padlock.SetBool("Unlock", !state);			
+			Debug.Log("Playing " + audioSource);
+			active = !state;
 		}
+	}
+
+	public void UnlockOnStart() {
+		padlock.gameObject.SetActive(false);
 		active = true;
 	}
 }

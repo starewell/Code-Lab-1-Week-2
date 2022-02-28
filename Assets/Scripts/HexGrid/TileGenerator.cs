@@ -24,7 +24,7 @@ public class TileGenerator : MonoBehaviour {
     }
  //Fail safe to active generation if degeneration is currently executing
     public void StartGridGeneration(GridDefinition def) {
-        if (activeCoroutine != null) StopCoroutine(activeCoroutine); //This cancels generation if for some reason both coroutines are called at the same time, such as the tutorial menu
+        if (activeCoroutine != null) StopCoroutine(activeCoroutine); //This cancels generation if for some reason both coroutines are called at the same time, such as the tutorial menu or quickly quitting 
         activeCoroutine = StartCoroutine(GenerateHexGrid(def));
     }
 

@@ -10,15 +10,14 @@ public class GameManager : MonoBehaviour {
     //Instances that are created and destroyed as scenes load
     TileGrid grid = null;
     MainMenuManager menu;
-    [SerializeField] ProgressionManager prog;
+    ProgressionManager prog;
 
     GridDefinition currentGrid; //passes GridDefinitions between scenes
 
-    public List<string> unlockedLvls = new List<string>(); // ~~new~~ the only data I thought worth saving, such that progress can be tracked!
+    public List<string> prevUnlockedLvls = new List<string>(); //Used to trigger unlocking animations 
+    public List<string> unlockedLvls = new List<string>(); //Data that is saved to file, updated through TileGrid DegenerateGrid(true) string from GridDefinition
 
-    [SerializeField] GameObject[] returnButtons; //Quit and Exit buttons always attached to GameManager so they can call it's functions
-
-//Week 2 singleton pattern
+    //Week 2 singleton pattern
     private static GameManager instance;
     public static GameManager GetInstance() {
         return instance;
@@ -28,8 +27,7 @@ public class GameManager : MonoBehaviour {
             Destroy(this.gameObject);
         } else {
             instance = this;
-            DontDestroyOnLoad(this.gameObject);
-        }
+        }     
     }
 
     void Start() {
@@ -37,10 +35,8 @@ public class GameManager : MonoBehaviour {
         sceneLoader.SceneLoadedCallback += OnSceneLoaded; //Subscribe to SceneLoaded delegate
         fileIO = FileIO.GetInstance();
 
-        returnButtons[0].SetActive(true); //toggle buttons
-        returnButtons[1].SetActive(false);
-
         UpdateInstances();
+        ReadProgress();
     }
 
 //Utility function to load scene, purge GameManager of references, and pass GridDefinitions between scenes
@@ -65,18 +61,11 @@ public class GameManager : MonoBehaviour {
     public void OnSceneLoaded() {
         UpdateInstances(); //Hook the GameManager up to new instances if they exist
 
-        if (currentGrid != null && currentGrid.level) {
-            StartCoroutine(GenerateGrid());
-            returnButtons[0].SetActive(false); //toggle buttons
-            returnButtons[1].SetActive(true);
-        } else {
-            returnButtons[0].SetActive(true); //toggle buttons
-            returnButtons[1].SetActive(false);
-        }
-        if (prog != null) {
-            prog.UpdateUnlocks(unlockedLvls);
-            Debug.Log("Updating prog");
-        }
+        if (currentGrid != null && currentGrid.level) 
+            StartCoroutine(GenerateGrid());          
+        
+        if (prog != null) 
+            prog.UpdateUnlocks(unlockedLvls, prevUnlockedLvls);                 
     }
 //Coroutine to delay the start of grid generation so references are made
     IEnumerator GenerateGrid() {
@@ -86,11 +75,41 @@ public class GameManager : MonoBehaviour {
             grid.GenerateGrid();
         }              
     }
-//Not saving much data here, but it saves!
-    void AddProgress(string lvl) {
-        unlockedLvls.Add(lvl);
+//~~
+//WEEK 4 FUNCTIONS
+//Not saving much data here, but it saves! called from TileGrid
+    void AddProgress(string[] lvls) {
+        prevUnlockedLvls = new List<string>();
+        foreach (string lvl in unlockedLvls) {
+            prevUnlockedLvls.Add(lvl);
+        }
+        foreach (string lvl in lvls) {
+            if (unlockedLvls.Find(x => x == lvl) == null)
+                unlockedLvls.Add(lvl);
+        }
         fileIO.SaveProgress(unlockedLvls);
     }
+
+//Read saved file and add saved unlocked levels to lists, called at Start
+    void ReadProgress() {
+        unlockedLvls = new List<string>();
+        prevUnlockedLvls = new List<string>();
+        List<string> fileLvls = fileIO.LoadProgress();
+        foreach(string lvl in fileLvls) {
+            unlockedLvls.Add(lvl);
+            prevUnlockedLvls.Add(lvl);
+        }
+        if (prog != null)
+            prog.UpdateUnlocks(unlockedLvls, prevUnlockedLvls);
+    }
+//Purge save file and GameManager lvl Lists, called from MenuManager
+    void ResetProgress(string name, GridDefinition def) { //hijacking an event and passing useless variables >.>
+        fileIO.EraseProgress();
+        unlockedLvls = new List<string>();
+        prevUnlockedLvls = new List<string>();
+        LoadScene("Menu", null);
+    }
+//~~
 
 //Creates references to instanced scripts if present in the scene
     void UpdateInstances() {
@@ -101,19 +120,23 @@ public class GameManager : MonoBehaviour {
         if (grid != null) grid.LevelEndCallback += ReturnToMenu;
         if (grid != null) grid.GridSolvedCallback += AddProgress;
         if (menu != null) menu.LoadSceneCallback += LoadScene;
+        if (menu != null) menu.ResetProgressCallback += ResetProgress;
+        if (menu != null) menu.QuitButtonCallback += QuitApplication;
     }
 //Removes references to instanced scripts if present in the class
     void RemoveInstances() {
         if (grid != null) grid.LevelEndCallback -= ReturnToMenu;
         if (grid != null) grid.GridSolvedCallback -= AddProgress;
         if (menu != null) menu.LoadSceneCallback -= LoadScene;
+        if (menu != null) menu.ResetProgressCallback -= ResetProgress;
+        if (menu != null) menu.QuitButtonCallback -= QuitApplication;
 
         grid = null;
         menu = null;
         prog = null;
     }
-    //Goodbye world!
-    public void QuitApplication() {
+//Goodbye world!
+    public void QuitApplication(string name, GridDefinition def) {
         Application.Quit();
     }
 }

@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc5a82275a8930a49ba6ce43c442a50c, type: 3}
-  m_Name: 1-3a
+  m_Name: 3-2b
   m_EditorClassIdentifier: 
   level: 1
   unlocks:
-  - 1-4
+  - 3-3b
   prefabs:
   - {fileID: 5042294112513554963, guid: a64e83d423edf8446ac0980c6d96d033, type: 3}
   colors:
   - {fileID: 2100000, guid: 79bb0117d6d7e844784c29c202e97529, type: 2}
   - {fileID: 2100000, guid: 65b936fb9bbe5b6438612bd317bd5029, type: 2}
   - {fileID: 2100000, guid: 71f53045c1fa4b740b150d484e524b4c, type: 2}
-  gridDim: {x: 11, y: 11}
+  gridDim: {x: 5, y: 9}
   tileSize: 1
-  spawnPercentRed: 0.3333
-  spawnPercentGreen: 0.3333
-  spawnPercentBlue: 0.3333
-  goalPercentRed: 0
-  goalPercentGreen: 0.55
-  goalPercentBlue: 0.125
+  spawnPercentRed: 0.333
+  spawnPercentGreen: 0.333
+  spawnPercentBlue: 0.333
+  goalPercentRed: 0.75
+  goalPercentGreen: 0
+  goalPercentBlue: 0

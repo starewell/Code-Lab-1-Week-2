@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 //Quick UI script for placeholder game mechanics
 [RequireComponent(typeof(Animator))]
-public class TotalsDisplay : MonoBehaviour {
+public class LevelUI : MonoBehaviour {
  //Define variables used to display UI and store values
 	public TileGrid grid;
 
@@ -15,7 +15,7 @@ public class TotalsDisplay : MonoBehaviour {
 
 	bool[] hasGoal = new bool[3];
 
-	Animator anim;
+	Animator totalsAnim;
 
 	int[] values = new int[3];
 	int[] goals = new int[3];
@@ -25,7 +25,7 @@ public class TotalsDisplay : MonoBehaviour {
 	bool called = false;
 
 //My singleton
-	public static TotalsDisplay instance;
+	public static LevelUI instance;
 	void Awake() { 
 		if (instance != null) { 
 			Debug.Log("More than one instance of TotalsDisplay found!");
@@ -40,14 +40,13 @@ public class TotalsDisplay : MonoBehaviour {
 		grid.GridCalculatedCallback += TogglePanel;	//Events which trigger UI updates
 		grid.GridCalculatedCallback += UpdateGoals;
 		grid.TotalsChangeCallback += UpdateTotals;
-		grid.LevelEndCallback += TogglePanel;
 
-		anim = GetComponent<Animator>();
+		totalsAnim = GetComponent<Animator>();
 	}
 //Plays UI animation when level start and end is triggered
 	void TogglePanel(float r, float g, float b) { //still passing useless variables >.>
-		bool current = anim.GetBool("Open");
-		anim.SetBool("Open", !current);
+		bool current = totalsAnim.GetBool("Open");
+		totalsAnim.SetBool("Open", !current);
 	}
 
 //Update the totals required to win in the UI when grid is calculated
@@ -84,6 +83,7 @@ bool firstCheck; //Used so that a win is not called on the origin TileFlip
 				called = true;
 				OnWinCallback?.Invoke();
 				grid.DegenerateGrid(true);
+				StartCoroutine(WaitToToggle());
 			}
         } else {
 			firstCheck = true;
@@ -111,4 +111,13 @@ bool firstCheck; //Used so that a win is not called on the origin TileFlip
 		}
 	}
 
+	public void ExitButton() {
+		grid.DegenerateGrid(false);
+		StartCoroutine(WaitToToggle());
+	}
+
+	IEnumerator WaitToToggle() {
+		yield return new WaitForSeconds(1);
+		TogglePanel(0, 0, 0);
+	}
 }

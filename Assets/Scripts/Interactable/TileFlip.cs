@@ -43,14 +43,15 @@ public class TileFlip : Interactable {
 		//yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0)[0].clip.length);
 		//Hardcoded delay bc I couldn't figure out delaying by current animation clip ^^^
 		yield return new WaitForSeconds(.25f);
+		if (!origin) audioSource.volume = audioSource.volume / 4;
 		audioSource.Play();
+		if (!origin) audioSource.volume = audioSource.volume * 2;
 		anim.SetBool("Flip", false);
 
 		//hexSpace.FlipHexSpace(grid.gridDef.colors); these too lines are redundant, but I think I want this one
 		FlipCallback?.Invoke(hexSpace);
 		yield return new WaitForSeconds(.125f);
-		if (origin) {
-			Debug.Log("FlipAdjacent");
+		if (origin) { 
 			OriginCallback?.Invoke(hexSpace);
 			active = true;
 		}
@@ -59,10 +60,10 @@ public class TileFlip : Interactable {
 	public IEnumerator DestroyTile() {
 		anim.SetBool("Destroy", true);
 		anim.SetBool("Flip", true);
-		yield return new WaitForSeconds(.5f);
-		HexSpace space = GetComponent<HexSpace>();
-		//grid.hexGridContents.Remove(space);
+		yield return new WaitForSeconds(.125f);
+		audioSource.volume = audioSource.volume / 8;
+		audioSource.Play();
+		yield return new WaitForSeconds(1);
 		Destroy(gameObject);
-		//space = null;
 	}
 }
