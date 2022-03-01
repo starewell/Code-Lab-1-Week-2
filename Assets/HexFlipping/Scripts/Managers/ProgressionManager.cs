@@ -25,7 +25,6 @@ public class ProgressionManager : MonoBehaviour {
         
         //Start scene with previously unlocked levels unlocked so they don't animate
         foreach(string lvl in prevList) {
-            Debug.Log(lvl);
             if (buttons.Find(x => x.name == lvl)) { 
                 buttons.Find(x => x.name == lvl).UnlockOnStart();
             }        

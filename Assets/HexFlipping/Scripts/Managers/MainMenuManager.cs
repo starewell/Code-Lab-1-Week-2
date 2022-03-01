@@ -6,8 +6,12 @@ public class MainMenuManager : MonoBehaviour {
 //Variables for object positioning, grid reference
     public GameObject[] sets;
     Animator lvlSelect, tutorial;
+    public enum MenuState { LevelSelect, Tutorial, LevelSelected, ResetProgress, Quit };
+    [SerializeField] MenuState currentState;
 
     public TileGrid grid;
+    GridDefinition passedGridDef = null;
+
 //Events for activating the GameManager
     public delegate void OnLevelSelect(string name, GridDefinition gridDef);
     public event OnLevelSelect LoadSceneCallback;
@@ -27,12 +31,7 @@ public class MainMenuManager : MonoBehaviour {
         lvlSelect = sets[0].GetComponent<Animator>();
         tutorial = sets[1].GetComponent<Animator>();
 
-        lvlSelect.SetBool("Left", true);
-        lvlSelect.SetBool("OnScreen", true);
-        tutorial.SetBool("Left", false);
-        tutorial.SetBool("OnScreen", false);
-        tutorial.Play("setOffscreen");
-        lvlSelect.Play("setTranslateRightOnscreen");
+        TriggerMenuChange(0);
     }
 //Sets anims for transitioning to tutorial page, waits for grid gen
     public void TriggerTutorial() {
@@ -88,5 +87,63 @@ public class MainMenuManager : MonoBehaviour {
         lvlSelect.SetBool("Left", false);
         lvlSelect.SetBool("OnScreen", false);
         StartCoroutine(WaitToLoadLevel(null));
+    }
+
+    public void PassGridDefinition(GridDefinition gridDef) {
+        passedGridDef = gridDef;
+    }
+
+    public void TriggerMenuChange(int stateIndex) {
+        StartCoroutine(ChangeMenuState(stateIndex));
+    }
+
+    IEnumerator ChangeMenuState(int state) { 
+        switch(state) {
+            default:
+                break;
+            case 0:
+                if (!lvlSelect.GetBool("OnScreen") && tutorial.GetBool("OnScreen")) {
+                    grid.DegenerateGrid(false);
+                    yield return new WaitForSeconds(0.85f);
+                    lvlSelect.SetBool("Left", true);
+                    lvlSelect.SetBool("OnScreen", true);
+                    tutorial.SetBool("Left", false);
+                    tutorial.SetBool("OnScreen", false);
+                } else if (!lvlSelect.GetBool("OnScreen") && !tutorial.GetBool("OnScreen")) {
+                    lvlSelect.SetBool("Left", false);
+                    lvlSelect.SetBool("OnScreen", true);
+                    lvlSelect.Play("setOffscreen");
+                    tutorial.SetBool("Left", false);
+                    tutorial.SetBool("OnScreen", false);
+                    tutorial.Play("setOffscreen");
+                }
+                break;
+            case 1:
+                if (lvlSelect.GetBool("OnScreen")  && !tutorial.GetBool("OnScreen")) {
+                    lvlSelect.SetBool("Left", true);
+                    lvlSelect.SetBool("OnScreen", false);
+                    tutorial.SetBool("Left", false);
+                    tutorial.SetBool("OnScreen", true);                   
+                    yield return new WaitForSeconds(0.85f);
+                    grid.GenerateGrid();
+                }
+
+                break;
+            case 2:
+            case 3:
+            case 4:
+                if (lvlSelect.GetBool("OnScreen") && !tutorial.GetBool("OnScreen")) {
+                    lvlSelect.SetBool("Left", false);
+                    lvlSelect.SetBool("OnScreen", false);
+                }
+                yield return new WaitForSeconds(0.85f);
+                if (state == 2 && passedGridDef != null)
+                    LoadSceneCallback?.Invoke("TileGenerator", passedGridDef);
+                if (state == 3)
+                    ResetProgressCallback?.Invoke(null, null);
+                if (state == 4)
+                    QuitButtonCallback?.Invoke(null, null);
+                break;             
+        }
     }
 }
