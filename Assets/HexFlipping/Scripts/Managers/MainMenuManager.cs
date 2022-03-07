@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 //Script used to manage main menu 'sets' or pages which have animated transitions that are hardcoded into delays here
+//Menu has states that are toggled by button scripts. Superfluous functions here to accommodate the button script functionality
 public class MainMenuManager : MonoBehaviour {
 //Variables for object positioning, grid reference
     public GameObject[] sets;
@@ -13,11 +14,12 @@ public class MainMenuManager : MonoBehaviour {
     GridDefinition passedGridDef = null;
 
 //Events for activating the GameManager
-    public delegate void OnLevelSelect(string name, GridDefinition gridDef);
+    public delegate void OnLevelSelect(string name = null, GridDefinition gridDef = null);
     public event OnLevelSelect LoadSceneCallback;
     public event OnLevelSelect QuitButtonCallback;
     public event OnLevelSelect ResetProgressCallback;
 
+//My singleton
     public static MainMenuManager instance;
     void Awake() { 
 		if (instance != null) { 
@@ -26,13 +28,86 @@ public class MainMenuManager : MonoBehaviour {
     	}
     	instance = this;
 	}
-//Scene load animator references, default animation states
+
+//On scene load, get animator references, set default animation states
     void Start() {
         lvlSelect = sets[0].GetComponent<Animator>();
         tutorial = sets[1].GetComponent<Animator>();
 
         TriggerMenuChange(0);
     }
+//had to create a second function to pass a GridDef for the GameManager, as the button script only accepts one overload
+    public void PassGridDefinition(GridDefinition gridDef) {
+        passedGridDef = gridDef;
+    }
+//public function to change state, currently hooked up to buttons so passes an int instead of the enum >.>
+    public void TriggerMenuChange(int stateIndex) {
+        StartCoroutine(ChangeMenuState(stateIndex));
+    }
+//Switch statement for my state machine. Currently switches an int index bc of butons, but the int corresponds to the enum index
+//Is also a coroutine so that I can delay the execution for animations
+    IEnumerator ChangeMenuState(int state) { 
+        switch(state) {
+            default:
+                break;
+            case 0: //Switch to LevelSelect
+                if (currentState == MenuState.Tutorial) {
+                    grid.DegenerateGrid(false);
+                    yield return new WaitForSeconds(0.85f); //Wait for animation
+                    lvlSelect.SetBool("Left", true);
+                    lvlSelect.SetBool("OnScreen", true);
+                    tutorial.SetBool("Left", false);
+                    tutorial.SetBool("OnScreen", false);
+                } else if (currentState != MenuState.Tutorial) {
+                    lvlSelect.SetBool("Left", false);
+                    lvlSelect.SetBool("OnScreen", true);
+                    lvlSelect.Play("setOffscreen");
+                    tutorial.SetBool("Left", false);
+                    tutorial.SetBool("OnScreen", false);
+                    tutorial.Play("setOffscreen");
+                }
+                currentState = MenuState.LevelSelect;
+                break;
+            case 1://Switch to Tutorial
+                if (currentState == MenuState.LevelSelect) {
+                    lvlSelect.SetBool("Left", true);
+                    lvlSelect.SetBool("OnScreen", false);
+                    tutorial.SetBool("Left", false);
+                    tutorial.SetBool("OnScreen", true);                   
+                    yield return new WaitForSeconds(0.85f); //Wait for animation
+                    grid.GenerateGrid();
+                }
+                currentState = MenuState.Tutorial;
+                break;
+            case 2:
+            case 3:
+            case 4://Exit the main menu
+                if (currentState == MenuState.LevelSelect) {
+                    lvlSelect.SetBool("Left", false);
+                    lvlSelect.SetBool("OnScreen", false);
+                }
+                yield return new WaitForSeconds(0.85f); //Wait for animation
+                //Trigger action specific events
+                if (state == 2 && passedGridDef != null) { 
+                    LoadSceneCallback?.Invoke("TileGenerator", passedGridDef);
+                    currentState = MenuState.LevelSelected;
+                }
+                if (state == 3) { 
+                    ResetProgressCallback?.Invoke();
+                    currentState = MenuState.ResetProgress;
+                }
+                if (state == 4) { 
+                    QuitButtonCallback?.Invoke();
+                    currentState = MenuState.Quit;
+                }
+                break;             
+        }
+    }
+}
+
+/* Refactored the following scripts into the neat little switch state machine above. 
+ * Looks a lot cleaner above and easier to parse, and with that affordance I made it more explicit so it still looks the same length anyways >.>
+
 //Sets anims for transitioning to tutorial page, waits for grid gen
     public void TriggerTutorial() {
         lvlSelect.SetBool("OnScreen", false);
@@ -89,61 +164,4 @@ public class MainMenuManager : MonoBehaviour {
         StartCoroutine(WaitToLoadLevel(null));
     }
 
-    public void PassGridDefinition(GridDefinition gridDef) {
-        passedGridDef = gridDef;
-    }
-
-    public void TriggerMenuChange(int stateIndex) {
-        StartCoroutine(ChangeMenuState(stateIndex));
-    }
-
-    IEnumerator ChangeMenuState(int state) { 
-        switch(state) {
-            default:
-                break;
-            case 0:
-                if (!lvlSelect.GetBool("OnScreen") && tutorial.GetBool("OnScreen")) {
-                    grid.DegenerateGrid(false);
-                    yield return new WaitForSeconds(0.85f);
-                    lvlSelect.SetBool("Left", true);
-                    lvlSelect.SetBool("OnScreen", true);
-                    tutorial.SetBool("Left", false);
-                    tutorial.SetBool("OnScreen", false);
-                } else if (!lvlSelect.GetBool("OnScreen") && !tutorial.GetBool("OnScreen")) {
-                    lvlSelect.SetBool("Left", false);
-                    lvlSelect.SetBool("OnScreen", true);
-                    lvlSelect.Play("setOffscreen");
-                    tutorial.SetBool("Left", false);
-                    tutorial.SetBool("OnScreen", false);
-                    tutorial.Play("setOffscreen");
-                }
-                break;
-            case 1:
-                if (lvlSelect.GetBool("OnScreen")  && !tutorial.GetBool("OnScreen")) {
-                    lvlSelect.SetBool("Left", true);
-                    lvlSelect.SetBool("OnScreen", false);
-                    tutorial.SetBool("Left", false);
-                    tutorial.SetBool("OnScreen", true);                   
-                    yield return new WaitForSeconds(0.85f);
-                    grid.GenerateGrid();
-                }
-
-                break;
-            case 2:
-            case 3:
-            case 4:
-                if (lvlSelect.GetBool("OnScreen") && !tutorial.GetBool("OnScreen")) {
-                    lvlSelect.SetBool("Left", false);
-                    lvlSelect.SetBool("OnScreen", false);
-                }
-                yield return new WaitForSeconds(0.85f);
-                if (state == 2 && passedGridDef != null)
-                    LoadSceneCallback?.Invoke("TileGenerator", passedGridDef);
-                if (state == 3)
-                    ResetProgressCallback?.Invoke(null, null);
-                if (state == 4)
-                    QuitButtonCallback?.Invoke(null, null);
-                break;             
-        }
-    }
-}
+*/
