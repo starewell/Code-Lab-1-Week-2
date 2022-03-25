@@ -3,24 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 //Script used to manage main menu 'sets' or pages which have animated transitions that are hardcoded into delays here
 //Menu has states that are toggled by button scripts. Superfluous functions here to accommodate the button script functionality
-public class MainMenuManager : MonoBehaviour {
+public class FlipMainMenuManager : MonoBehaviour {
 //Variables for object positioning, grid reference
     public GameObject[] sets;
     Animator lvlSelect, tutorial;
     public enum MenuState { LevelSelect, Tutorial, LevelSelected, ResetProgress, Quit };
     [SerializeField] MenuState currentState;
 
-    public TileGrid grid;
-    GridDefinition passedGridDef = null;
+    public FlipGrid grid;
+    FlipGridDefinition passedGridDef = null;
 
-//Events for activating the GameManager
-    public delegate void OnLevelSelect(string name = null, GridDefinition gridDef = null);
+//Events for activating the FlipGameManager
+    public delegate void OnLevelSelect(string name = null, FlipGridDefinition gridDef = null);
     public event OnLevelSelect LoadSceneCallback;
     public event OnLevelSelect QuitButtonCallback;
     public event OnLevelSelect ResetProgressCallback;
 
 //My singleton
-    public static MainMenuManager instance;
+    public static FlipMainMenuManager instance;
     void Awake() { 
 		if (instance != null) { 
 			Debug.Log("More than one instance of MainMenuManager found!");
@@ -36,8 +36,8 @@ public class MainMenuManager : MonoBehaviour {
 
         TriggerMenuChange(0);
     }
-//had to create a second function to pass a GridDef for the GameManager, as the button script only accepts one overload
-    public void PassGridDefinition(GridDefinition gridDef) {
+//had to create a second function to pass a GridDef for the FlipGameManager, as the button script only accepts one overload
+    public void PassGridDefinition(FlipGridDefinition gridDef) {
         passedGridDef = gridDef;
     }
 //public function to change state, currently hooked up to buttons so passes an int instead of the enum >.>
@@ -132,13 +132,13 @@ public class MainMenuManager : MonoBehaviour {
         tutorial.SetBool("OnScreen", false);
     }
 //Sets anims for transitioning to levels then waits to load level
-    public void TriggerLevelSelection(GridDefinition gridDef) {
+    public void TriggerLevelSelection(FlipGridDefinition gridDef) {
         lvlSelect.SetBool("Left", false);
         lvlSelect.SetBool("OnScreen", false);
         StartCoroutine(WaitToLoadLevel(gridDef));
     }
-//Calls a callback for either the GameManager to LoadScene(string, GridDef) or to ResetProgress()
-    IEnumerator WaitToLoadLevel(GridDefinition gridDef) {
+//Calls a callback for either the FlipGameManager to LoadScene(string, GridDef) or to ResetProgress()
+    IEnumerator WaitToLoadLevel(FlipGridDefinition gridDef) {
         yield return new WaitForSeconds(.85f);
         if (gridDef == null)
             ResetProgressCallback?.Invoke(null, null);
@@ -146,7 +146,7 @@ public class MainMenuManager : MonoBehaviour {
             LoadSceneCallback?.Invoke("TileGenerator", gridDef);
           
     }
-//Call to GameManager to QuitApplication()
+//Call to FlipGameManager to QuitApplication()
     public void TriggerQuitButton() {
         lvlSelect.SetBool("Left", false);
         lvlSelect.SetBool("OnScreen", false);
@@ -157,7 +157,7 @@ public class MainMenuManager : MonoBehaviour {
         yield return new WaitForSeconds(.85f);
         QuitButtonCallback?.Invoke(null, null);
     }
-//Call to GameManager to ResetProgress()
+//Call to FlipGameManager to ResetProgress()
     public void ResetProgressButton() {
         lvlSelect.SetBool("Left", false);
         lvlSelect.SetBool("OnScreen", false);

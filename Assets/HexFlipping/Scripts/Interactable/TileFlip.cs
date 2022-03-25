@@ -12,7 +12,7 @@ public class TileFlip : Interactable {
 
 	public AudioSource audioSource;
 
-	TileGrid grid;
+	FlipGrid grid;
 	HexSpace hexSpace;
 
 	public delegate void OnTileFlip(HexSpace space);
@@ -22,7 +22,7 @@ public class TileFlip : Interactable {
 	public override void Start() {
 		base.Start();
 
-		grid = TileGrid.instance;
+		grid = FlipGrid.instance;
 		hexSpace = GetComponent<HexSpace>();
 
 		anim = GetComponent<Animator>();

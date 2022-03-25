@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-//Instanced manager on the main menu which updates progression display/UI according to GameManager's saved progress
-public class ProgressionManager : MonoBehaviour {
+//Instanced manager on the main menu which updates progression display/UI according to FlipGameManager's saved progress
+public class FlipProgressionManager : MonoBehaviour {
 
     [SerializeField] List<TileButton> buttons = new List<TileButton>();
 
 //Week 2 Singleton Pattern
-    private static ProgressionManager instance;
-    public static ProgressionManager GetInstance() {
+    private static FlipProgressionManager instance;
+    public static FlipProgressionManager GetInstance() {
         return instance;
     }
     void Awake() { 

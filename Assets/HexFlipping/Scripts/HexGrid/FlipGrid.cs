@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Rehoused a lot of functions from the TileGenerator class, this class stores HexSpaces and updates them
-[RequireComponent(typeof(TileGenerator))]
-public class TileGrid : MonoBehaviour {
+[RequireComponent(typeof(FlipTileGenerator))]
+public class FlipGrid : MonoBehaviour {
 
-    public GridDefinition gridDef; //We'll find a more clever way to pass this in the future
+    public FlipGridDefinition gridDef; //We'll find a more clever way to pass this in the future
 
 //Whole lotta events for when anything about the grid changes
     public delegate void OnGridChange(float r, float g, float b);
@@ -20,20 +20,20 @@ public class TileGrid : MonoBehaviour {
 //
     public List<HexSpace> hexGridContents = new List<HexSpace>();  //Stored list of all tiles in grid; HexSpaces
 
-    TileGenerator generator;
+    FlipTileGenerator generator;
 
 //My singleton which does not completely remove human error, but is it egregious? 
-    public static TileGrid instance;
+    public static FlipGrid instance;
     void Awake() {
         if (instance != null) {
-            Debug.Log("More than one instance of TileGrid found!");
+            Debug.Log("More than one instance of FlipGrid found!");
             return;
         }
         instance = this;
     }
 //
     private void Start() {
-        generator = GetComponent<TileGenerator>();
+        generator = GetComponent<FlipTileGenerator>();
     }
 //Trigger generator, invoke TotalsDisplay to update
     public void GenerateGrid() {
@@ -64,7 +64,7 @@ public class TileGrid : MonoBehaviour {
         }
     }
 //
-//Trigger GameManager from generator call
+//Trigger FlipGameManager from generator call
     public void GridDegenerated() { 
         if(gridDef.level) {
             LevelEndCallback?.Invoke(0, 0, 0);

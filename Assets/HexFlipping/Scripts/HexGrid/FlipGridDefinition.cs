@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Scriptable object which determines the attributes of every level loaded into the TileGenerator scene
-//Create levels by creating GridDefinitions in the assets folder and pass it through GameManager's LoadScene function
+//Create levels by creating GridDefinitions in the assets folder and pass it through FlipGameManager's LoadScene function
 [CreateAssetMenu(fileName = "New Grid", menuName = "Hex Grid")]
-public class GridDefinition : ScriptableObject {
+public class FlipGridDefinition : ScriptableObject {
 
     //Definitions for the grid generation reference
     public bool level;

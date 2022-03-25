@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Functionality split between generating and storing HexSpaces, this class soley for generation and destruction
-public class TileGenerator : MonoBehaviour {
+public class FlipTileGenerator : MonoBehaviour {
 
     Coroutine activeCoroutine;
 
-    public TileGrid grid;
+    public FlipGrid grid;
 
     //My singleton which does not completely remove human error, but is it egregious? 
-    public static TileGenerator instance;
+    public static FlipTileGenerator instance;
     void Awake() {
         if (instance != null) {
             Debug.Log("More than one instance of TileGenerator found!");
@@ -20,16 +20,16 @@ public class TileGenerator : MonoBehaviour {
     }
     //
     public void Start() {
-        grid = TileGrid.instance;
+        grid = FlipGrid.instance;
     }
  //Fail safe to active generation if degeneration is currently executing
-    public void StartGridGeneration(GridDefinition def) {
+    public void StartGridGeneration(FlipGridDefinition def) {
         if (activeCoroutine != null) StopCoroutine(activeCoroutine); //This cancels generation if for some reason both coroutines are called at the same time, such as the tutorial menu or quickly quitting 
         activeCoroutine = StartCoroutine(GenerateHexGrid(def));
     }
 
     //Primary function of class, create a grid of hexes and store their important data in a centralized list     
-    public IEnumerator GenerateHexGrid(GridDefinition def) {
+    public IEnumerator GenerateHexGrid(FlipGridDefinition def) {
         //Defining local variables used in function
         float tileHeight = def.tileSize * 1.1547f; //Width multiplied by ratio of hex width to height
         float zOffset = tileHeight * 0.75f; //Height multiplied by 3/4 -- height array ratio of hex grids
@@ -78,13 +78,13 @@ public class TileGenerator : MonoBehaviour {
         grid.GridGenerated();      
     }
 //Fail safe to active degeneration if generation is currently executing
-    public void StartGridDegeneration(GridDefinition def)
+    public void StartGridDegeneration(FlipGridDefinition def)
     {
         if (activeCoroutine != null) StopCoroutine(activeCoroutine); //This cancels generation if for some reason both coroutines are called at the same time, such as the tutorial menu
         activeCoroutine = StartCoroutine(DegenerateHexGrid(def)); 
     }
 //New loop, cycles through list of HexSpaces, triggering their destroy animations, then purging the list
-    public IEnumerator DegenerateHexGrid(GridDefinition def) {
+    public IEnumerator DegenerateHexGrid(FlipGridDefinition def) {
         foreach(HexSpace space in grid.hexGridContents) {
 
             StartCoroutine(space.GetComponent<TileFlip>().DestroyTile());

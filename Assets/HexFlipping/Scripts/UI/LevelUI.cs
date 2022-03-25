@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 public class LevelUI : MonoBehaviour {
  //Define variables used to display UI and store values
-	public TileGrid grid;
+	public FlipGrid grid;
 
 	public Slider[] sliders;
 	public Text[] valuesText;
@@ -36,7 +36,7 @@ public class LevelUI : MonoBehaviour {
 
 //Reference instance, subscribe to events
 	void Start() {		
-		grid = TileGrid.instance; //Grab instance ref for event callbacks to update UI from TileGenerator
+		grid = FlipGrid.instance; //Grab instance ref for event callbacks to update UI from TileGenerator
 		grid.GridCalculatedCallback += TogglePanel;	//Events which trigger UI updates
 		grid.GridCalculatedCallback += UpdateGoals;
 		grid.TotalsChangeCallback += UpdateTotals;
@@ -68,7 +68,7 @@ public class LevelUI : MonoBehaviour {
 	}
 	//
 
-//Update current values stored in each colors slider each time a hex is flipped in TileGrid
+//Update current values stored in each colors slider each time a hex is flipped in FlipGrid
 bool firstCheck; //Used so that a win is not called on the origin TileFlip
 	void UpdateTotals(float r, float g, float b) {
 		values[0] = (int)r;

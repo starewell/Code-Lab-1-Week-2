@@ -7,7 +7,7 @@ public class TutorialTotalDisplay : MonoBehaviour
 {
     public Slider slider;
     public Text[] texts;
-    public TileGrid grid;
+    public FlipGrid grid;
 
     void Start() {
         grid.TotalsChangeCallback += UpdateTotal;

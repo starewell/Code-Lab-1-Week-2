@@ -2,24 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour {
+public class FlipGameManager : MonoBehaviour {
 
     SceneLoader sceneLoader;
-    FileIO fileIO;
+    FlipFileIO fileIO;
 
     //Instances that are created and destroyed as scenes load
-    TileGrid grid = null;
-    MainMenuManager menu;
-    ProgressionManager prog;
+    FlipGrid grid = null;
+    FlipMainMenuManager menu;
+    FlipProgressionManager prog;
 
-    GridDefinition currentGrid; //passes GridDefinitions between scenes
+    FlipGridDefinition currentGrid; //passes GridDefinitions between scenes
 
     public List<string> prevUnlockedLvls = new List<string>(); //Used to trigger unlocking animations 
-    public List<string> unlockedLvls = new List<string>(); //Data that is saved to file, updated through TileGrid DegenerateGrid(true) string from GridDefinition
+    public List<string> unlockedLvls = new List<string>(); //Data that is saved to file, updated through FlipGrid DegenerateGrid(true) string from FlipGridDefinition
 
     //Week 2 singleton pattern
-    private static GameManager instance;
-    public static GameManager GetInstance() {
+    private static FlipGameManager instance;
+    public static FlipGameManager GetInstance() {
         return instance;
     }
     void Awake() {
@@ -33,14 +33,14 @@ public class GameManager : MonoBehaviour {
     void Start() {
         sceneLoader = SceneLoader.GetInstance(); //Week 2 singleton referencing
         sceneLoader.SceneLoadedCallback += OnSceneLoaded; //Subscribe to SceneLoaded delegate
-        fileIO = FileIO.GetInstance();
+        fileIO = FlipFileIO.GetInstance();
 
         UpdateInstances();
         ReadProgress();
     }
 
-//Utility function to load scene, purge GameManager of references, and pass GridDefinitions between scenes
-    public void LoadScene(string name, GridDefinition def) {
+//Utility function to load scene, purge FlipGameManager of references, and pass GridDefinitions between scenes
+    public void LoadScene(string name, FlipGridDefinition def) {
         RemoveInstances();
         currentGrid = def;
 
@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour {
 
 //Function called when a scene finishes loading
     public void OnSceneLoaded() {
-        UpdateInstances(); //Hook the GameManager up to new instances if they exist
+        UpdateInstances(); //Hook the FlipGameManager up to new instances if they exist
 
         if (currentGrid != null && currentGrid.level) 
             StartCoroutine(GenerateGrid());          
@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour {
     }
 //~~
 //WEEK 4 FUNCTIONS
-//Not saving much data here, but it saves! called from TileGrid
+//Not saving much data here, but it saves! called from FlipGrid
     void AddProgress(string[] lvls) {
         prevUnlockedLvls = new List<string>();
         foreach (string lvl in unlockedLvls) {
@@ -102,8 +102,8 @@ public class GameManager : MonoBehaviour {
         if (prog != null)
             prog.UpdateUnlocks(unlockedLvls, prevUnlockedLvls);
     }
-//Purge save file and GameManager lvl Lists, called from MenuManager
-    void ResetProgress(string name, GridDefinition def) { //hijacking an event and passing useless variables >.>
+//Purge save file and FlipGameManager lvl Lists, called from MenuManager
+    void ResetProgress(string name, FlipGridDefinition def) { //hijacking an event and passing useless variables >.>
         fileIO.EraseProgress();
         unlockedLvls = new List<string>();
         prevUnlockedLvls = new List<string>();
@@ -113,9 +113,9 @@ public class GameManager : MonoBehaviour {
 
 //Creates references to instanced scripts if present in the scene
     void UpdateInstances() {
-        if (TileGrid.instance != null) grid = TileGrid.instance;
-        if (MainMenuManager.instance != null) menu = MainMenuManager.instance;
-        if (ProgressionManager.GetInstance() != null) prog = ProgressionManager.GetInstance();
+        if (FlipGrid.instance != null) grid = FlipGrid.instance;
+        if (FlipMainMenuManager.instance != null) menu = FlipMainMenuManager.instance;
+        if (FlipProgressionManager.GetInstance() != null) prog = FlipProgressionManager.GetInstance();
 
         if (grid != null) grid.LevelEndCallback += ReturnToMenu;
         if (grid != null) grid.GridSolvedCallback += AddProgress;
@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour {
         prog = null;
     }
 //Goodbye world!
-    public void QuitApplication(string name, GridDefinition def) {
+    public void QuitApplication(string name, FlipGridDefinition def) {
         Application.Quit();
     }
 }

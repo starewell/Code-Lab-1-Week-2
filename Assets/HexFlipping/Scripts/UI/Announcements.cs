@@ -6,13 +6,13 @@ using UnityEngine.UI;
 //Quick class to trigger UI callouts through events
 public class Announcements : MonoBehaviour {
 
-    TileGrid grid;
+    FlipGrid grid;
     LevelUI totals;
 
     public GameObject[] barkPanels; //BarkPanel prefabs, different announcments
 
     void Start() {
-        grid = TileGrid.instance;
+        grid = FlipGrid.instance;
         grid.GridGeneratedCallback += OnGridGenerated;
         totals = LevelUI.instance;
         totals.OnWinCallback += OnWin;

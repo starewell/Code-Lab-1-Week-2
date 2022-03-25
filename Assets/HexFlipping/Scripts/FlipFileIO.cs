@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-//WEEK 4 HW; script to save and load string Lists and sort them for the GameManager
-public class FileIO : MonoBehaviour {
+//WEEK 4 HW; script to save and load string Lists and sort them for the FlipGameManager
+public class FlipFileIO : MonoBehaviour {
 
     const string FILE_NAME = "HexFlipSave.txt";
 
 //Week 2 singleton pattern
-    private static FileIO instance;
-    public static FileIO GetInstance() {
+    private static FlipFileIO instance;
+    public static FlipFileIO GetInstance() {
         return instance;
     }
     void Awake() {
