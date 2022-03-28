@@ -16,6 +16,7 @@ public class PadlockActor : Actor {
         HexSpace targetSpace = legalSpaces[0];
 
         TargetSpace(targetSpace);
+        takingTurn = false;
     }
 
     //This was meant to be the overriden Coroutine that could signal when the Actor is done with it's actions

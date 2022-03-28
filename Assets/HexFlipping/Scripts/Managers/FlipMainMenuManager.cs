@@ -80,15 +80,7 @@ public class FlipMainMenuManager : MonoBehaviour {
                 }
                 currentState = MenuState.Tutorial;
                 break;
-            case 2: //Reset Save Progress
-                if (currentState == MenuState.LevelSelect) {
-                    lvlSelect.SetBool("Left", true);
-                    lvlSelect.SetBool("OnScreen", false);
-                    yield return new WaitForSeconds(0.85f);
-                    ResetProgressCallback?.Invoke();                  
-                }
-                currentState = MenuState.ResetProgress;
-                break;            
+            case 2:                   
             case 3:
             case 4:
             case 5://The following exit the main menu in the same way
@@ -97,7 +89,11 @@ public class FlipMainMenuManager : MonoBehaviour {
                     lvlSelect.SetBool("OnScreen", false);
                 }
                 yield return new WaitForSeconds(0.85f); //Wait for animation
-                //Trigger action specific events               
+                //Trigger action specific events
+                if (state == 2) { 
+                    ResetProgressCallback?.Invoke();
+                    currentState = MenuState.ResetProgress;
+                }
                 if (state == 3) { 
                     UnlockAllCallback?.Invoke();
                     currentState = MenuState.UnlockAll; 
