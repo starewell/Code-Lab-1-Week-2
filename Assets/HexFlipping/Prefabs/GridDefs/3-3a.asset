@@ -21,11 +21,15 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 79bb0117d6d7e844784c29c202e97529, type: 2}
   - {fileID: 2100000, guid: 65b936fb9bbe5b6438612bd317bd5029, type: 2}
   - {fileID: 2100000, guid: 71f53045c1fa4b740b150d484e524b4c, type: 2}
-  gridDim: {x: 5, y: 5}
+  gridDim: {x: 9, y: 9}
   tileSize: 1
-  spawnPercentRed: 0.333
-  spawnPercentGreen: 0.333
-  spawnPercentBlue: 0.333
-  goalPercentRed: 0.65
-  goalPercentGreen: 0
+  spawnPercentRed: 0.333333
+  spawnPercentGreen: 0.33333
+  spawnPercentBlue: 0.33333
+  goalPercentRed: 0
+  goalPercentGreen: 0.5
   goalPercentBlue: 0
+  actors:
+  - {fileID: 5905639816911411350, guid: 0360842eba069bd42974b6d7e77dfe11, type: 3}
+  - {fileID: 8091840721893085993, guid: 74ae460831259d8418e92d84bbd52f06, type: 3}
+  actorCount: 0400000002000000

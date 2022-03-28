@@ -6,6 +6,7 @@ public class FlipGameManager : MonoBehaviour {
 
     SceneLoader sceneLoader;
     FlipFileIO fileIO;
+    LevelStateMachine levelStateMachine;
 
     //Instances that are created and destroyed as scenes load
     FlipGrid grid = null;
@@ -27,6 +28,7 @@ public class FlipGameManager : MonoBehaviour {
             Destroy(this.gameObject);
         } else {
             instance = this;
+            DontDestroyOnLoad(this.gameObject);
         }     
     }
 
@@ -102,6 +104,13 @@ public class FlipGameManager : MonoBehaviour {
         if (prog != null)
             prog.UpdateUnlocks(unlockedLvls, prevUnlockedLvls);
     }
+//Who doens't like a cheatcode? Good for debugging
+    void UnlockAll(string name, FlipGridDefinition def) {
+        fileIO.UnlockAll();
+        unlockedLvls = new List<string> { "1-1", "1-2a", "1-2b", "1-3a", "1-3b", "1-4", "2-1", "2-2a", "2-2b", "2-3a", "2-3b", "2-4", "3-1", "3-2a", "3-2b", "3-3a", "3-3b", "3-4" };
+        prevUnlockedLvls = new List<string> { "1-1", "1-2a", "1-2b", "1-3a", "1-3b", "1-4", "2-1", "2-2a", "2-2b", "2-3a", "2-3b", "2-4", "3-1", "3-2a", "3-2b", "3-3a", "3-3b", "3-4" };
+        LoadScene("Menu", null);
+    }
 //Purge save file and FlipGameManager lvl Lists, called from MenuManager
     void ResetProgress(string name, FlipGridDefinition def) { //hijacking an event and passing useless variables >.>
         fileIO.EraseProgress();
@@ -117,17 +126,19 @@ public class FlipGameManager : MonoBehaviour {
         if (FlipMainMenuManager.instance != null) menu = FlipMainMenuManager.instance;
         if (FlipProgressionManager.GetInstance() != null) prog = FlipProgressionManager.GetInstance();
 
-        if (grid != null) grid.LevelEndCallback += ReturnToMenu;
+        if (grid != null) grid.SceneEndCallback += ReturnToMenu;
         if (grid != null) grid.GridSolvedCallback += AddProgress;
         if (menu != null) menu.LoadSceneCallback += LoadScene;
+        if (menu != null) menu.UnlockAllCallback += UnlockAll;
         if (menu != null) menu.ResetProgressCallback += ResetProgress;
         if (menu != null) menu.QuitButtonCallback += QuitApplication;
     }
 //Removes references to instanced scripts if present in the class
     void RemoveInstances() {
-        if (grid != null) grid.LevelEndCallback -= ReturnToMenu;
+        if (grid != null) grid.SceneEndCallback -= ReturnToMenu;
         if (grid != null) grid.GridSolvedCallback -= AddProgress;
         if (menu != null) menu.LoadSceneCallback -= LoadScene;
+        if (menu != null) menu.UnlockAllCallback -= UnlockAll;
         if (menu != null) menu.ResetProgressCallback -= ResetProgress;
         if (menu != null) menu.QuitButtonCallback -= QuitApplication;
 

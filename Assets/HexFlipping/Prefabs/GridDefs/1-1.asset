@@ -30,3 +30,5 @@ MonoBehaviour:
   goalPercentRed: 0
   goalPercentGreen: 0.4
   goalPercentBlue: 0
+  actors: []
+  actorCount: 

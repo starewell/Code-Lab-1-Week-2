@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Functionality split between generating and storing HexSpaces, this class soley for generation and destruction
-public class FlipTileGenerator : MonoBehaviour {
+public class FlipGridGenerator : MonoBehaviour {
 
     Coroutine activeCoroutine;
+
 
     public FlipGrid grid;
 
     //My singleton which does not completely remove human error, but is it egregious? 
-    public static FlipTileGenerator instance;
+    public static FlipGridGenerator instance;
     void Awake() {
         if (instance != null) {
             Debug.Log("More than one instance of TileGenerator found!");
@@ -74,7 +75,28 @@ public class FlipTileGenerator : MonoBehaviour {
                 //
             }
             //
+        }       
+        if (def.actors.Count != 0) { //Bonus loop! If the grid definition now contains actors, take another minute to populate the generated grid randomly with the actors
+            int actorIndex = 0;
+            List<HexSpace> temp = new List<HexSpace>(grid.hexGridContents);
+            temp.Shuffle();
+
+            yield return new WaitForSeconds(.5f);
+            foreach (Actor actor in def.actors) {
+                for (int i = 0; i < def.actorCount[actorIndex]; i++) {
+                    spawnPos = temp[0].position;
+
+                    Actor newActor = Instantiate(actor, spawnPos, Quaternion.identity, this.transform);
+                    newActor.currentSpace = temp[0];
+                    temp[0].occupied = true;
+                    grid.AddActor(newActor);
+
+                    temp.RemoveAt(0);
+                }
+                actorIndex++;
+            }      
         }
+        yield return new WaitForSeconds(1);
         grid.GridGenerated();      
     }
 //Fail safe to active degeneration if generation is currently executing
@@ -85,6 +107,12 @@ public class FlipTileGenerator : MonoBehaviour {
     }
 //New loop, cycles through list of HexSpaces, triggering their destroy animations, then purging the list
     public IEnumerator DegenerateHexGrid(FlipGridDefinition def) {
+        if (grid.gridActors.Count != 0) { 
+            foreach (Actor actor in grid.gridActors) {
+                StartCoroutine(actor.DespawnActor());
+            }
+            yield return new WaitForSeconds(1);
+        }
         foreach(HexSpace space in grid.hexGridContents) {
 
             StartCoroutine(space.GetComponent<TileFlip>().DestroyTile());
@@ -143,4 +171,20 @@ public class FlipTileGenerator : MonoBehaviour {
         return pools;
     }
 //    
+}
+
+public static class IListExtensions {
+    /// <summary>
+    /// Shuffles the element order of the specified list.
+    /// </summary>
+    public static void Shuffle<T>(this IList<T> ts) {
+        var count = ts.Count;
+        var last = count - 1;
+        for (var i = 0; i < last; ++i) {
+            var r = UnityEngine.Random.Range(i, count);
+            var tmp = ts[i];
+            ts[i] = ts[r];
+            ts[r] = tmp;
+        }
+    }
 }

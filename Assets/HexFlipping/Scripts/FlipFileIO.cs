@@ -54,4 +54,10 @@ public class FlipFileIO : MonoBehaviour {
         writer.Write("");
         writer.Close();
     }
+
+    public void UnlockAll() {
+        StreamWriter writer = new StreamWriter(FILE_NAME, false);
+        writer.Write("1-1\n1-2a\n1-2b\n1-3a\n1-3b\n1-4\n2-1\n2-2a\n2-2b\n2-3a\n2-3b\n2-4\n3-1\n3-2a\n3-2b\n3-3a\n3-3b\n3-4");
+        writer.Close();
+    }
 }

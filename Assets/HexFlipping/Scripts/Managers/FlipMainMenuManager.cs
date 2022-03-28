@@ -7,7 +7,7 @@ public class FlipMainMenuManager : MonoBehaviour {
 //Variables for object positioning, grid reference
     public GameObject[] sets;
     Animator lvlSelect, tutorial;
-    public enum MenuState { LevelSelect, Tutorial, LevelSelected, ResetProgress, Quit };
+    public enum MenuState { LevelSelect, Tutorial, UnlockAll, ResetProgress, LevelSelected, Quit };
     [SerializeField] MenuState currentState;
 
     public FlipGrid grid;
@@ -17,6 +17,7 @@ public class FlipMainMenuManager : MonoBehaviour {
     public delegate void OnLevelSelect(string name = null, FlipGridDefinition gridDef = null);
     public event OnLevelSelect LoadSceneCallback;
     public event OnLevelSelect QuitButtonCallback;
+    public event OnLevelSelect UnlockAllCallback;
     public event OnLevelSelect ResetProgressCallback;
 
 //My singleton
@@ -79,24 +80,33 @@ public class FlipMainMenuManager : MonoBehaviour {
                 }
                 currentState = MenuState.Tutorial;
                 break;
-            case 2:
+            case 2: //Reset Save Progress
+                if (currentState == MenuState.LevelSelect) {
+                    lvlSelect.SetBool("Left", true);
+                    lvlSelect.SetBool("OnScreen", false);
+                    yield return new WaitForSeconds(0.85f);
+                    ResetProgressCallback?.Invoke();                  
+                }
+                currentState = MenuState.ResetProgress;
+                break;            
             case 3:
-            case 4://Exit the main menu
+            case 4:
+            case 5://The following exit the main menu in the same way
                 if (currentState == MenuState.LevelSelect) {
                     lvlSelect.SetBool("Left", false);
                     lvlSelect.SetBool("OnScreen", false);
                 }
                 yield return new WaitForSeconds(0.85f); //Wait for animation
-                //Trigger action specific events
-                if (state == 2 && passedGridDef != null) { 
+                //Trigger action specific events               
+                if (state == 3) { 
+                    UnlockAllCallback?.Invoke();
+                    currentState = MenuState.UnlockAll; 
+                }
+                if (state == 4 && passedGridDef != null) { //Load Level
                     LoadSceneCallback?.Invoke("TileGenerator", passedGridDef);
                     currentState = MenuState.LevelSelected;
                 }
-                if (state == 3) { 
-                    ResetProgressCallback?.Invoke();
-                    currentState = MenuState.ResetProgress;
-                }
-                if (state == 4) { 
+                if (state == 5) { 
                     QuitButtonCallback?.Invoke();
                     currentState = MenuState.Quit;
                 }

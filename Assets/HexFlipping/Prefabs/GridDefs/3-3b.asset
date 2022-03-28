@@ -21,11 +21,14 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 79bb0117d6d7e844784c29c202e97529, type: 2}
   - {fileID: 2100000, guid: 65b936fb9bbe5b6438612bd317bd5029, type: 2}
   - {fileID: 2100000, guid: 71f53045c1fa4b740b150d484e524b4c, type: 2}
-  gridDim: {x: 3, y: 11}
+  gridDim: {x: 3, y: 7}
   tileSize: 1
   spawnPercentRed: 0.333
   spawnPercentGreen: 0.333
   spawnPercentBlue: 0.333
-  goalPercentRed: 0.75
-  goalPercentGreen: 0
-  goalPercentBlue: 0
+  goalPercentRed: 0
+  goalPercentGreen: 0.75
+  goalPercentBlue: 0.1
+  actors:
+  - {fileID: 6690263780999095831, guid: 4ac75e80ab2088943a08430aaa670905, type: 3}
+  actorCount: 02000000

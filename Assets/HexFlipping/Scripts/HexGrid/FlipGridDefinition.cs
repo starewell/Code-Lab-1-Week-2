@@ -2,10 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Scriptable object which determines the attributes of every level loaded into the TileGenerator scene
-//Create levels by creating GridDefinitions in the assets folder and pass it through FlipGameManager's LoadScene function
-[CreateAssetMenu(fileName = "New Grid", menuName = "Hex Grid")]
+
+[CreateAssetMenu(fileName = "New Grid", menuName = "Flip Grid")]
 public class FlipGridDefinition : ScriptableObject {
+
+    /// <summary>
+    /// Scriptable object which determines the attributes of every level loaded into the TileGenerator scene
+    /// Create levels by creating GridDefinitions in the assets folder and pass it through FlipGameManager's LoadScene function
+    /// Right click > Create > Flip Grid
+    /// </summary>
 
     //Definitions for the grid generation reference
     public bool level;
@@ -29,6 +34,8 @@ public class FlipGridDefinition : ScriptableObject {
     [Range(0, 1)]
     public float goalPercentBlue;
     //
-
+    //Actors! Drag in prefabs, and match them in the Count list by their index!
+    public List<Actor> actors;
+    public List<int> actorCount;
 
 }

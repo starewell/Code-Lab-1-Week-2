@@ -22,8 +22,8 @@ public class Interactable : MonoBehaviour {
         }   
     }
 //Stop the player from clicking again until flip is complete
-    public virtual void Interact() {
-        active = false;
+    protected virtual void Interact() {
+
         StopCoroutine(hover.Activate());
         StartCoroutine(hover.Deactivate());
     }

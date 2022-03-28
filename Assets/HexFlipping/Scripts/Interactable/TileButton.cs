@@ -24,7 +24,7 @@ public class TileButton : Interactable {
 		else padlock.gameObject.SetActive(true);
 	}
 //When base class detects an interact function
-    public override void Interact() {
+    protected override void Interact() {
         base.Interact();
 
 		StartCoroutine(FlipTile());

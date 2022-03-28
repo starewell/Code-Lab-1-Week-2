@@ -27,5 +27,8 @@ MonoBehaviour:
   spawnPercentGreen: 0.333
   spawnPercentBlue: 0.333
   goalPercentRed: 0
-  goalPercentGreen: 0.2
-  goalPercentBlue: 0.6
+  goalPercentGreen: 0.6
+  goalPercentBlue: 0.2
+  actors:
+  - {fileID: 5905639816911411350, guid: 0360842eba069bd42974b6d7e77dfe11, type: 3}
+  actorCount: 05000000
