@@ -148,6 +148,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   yOffset: 0.25
   duration: 0.125
+  sinAmplitude: 2
+  sinFrequency: 4
+  active: 0
+  raising: 0
+  raised: 0
+  lowering: 0
 --- !u!114 &-6960427462922863442
 MonoBehaviour:
   m_ObjectHideFlags: 0

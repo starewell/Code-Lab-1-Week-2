@@ -23,22 +23,17 @@ public class Interactable : MonoBehaviour {
     }
 //Stop the player from clicking again until flip is complete
     protected virtual void Interact() {
-
-        StopCoroutine(hover.Activate());
-        StartCoroutine(hover.Deactivate());
+        hover.active = false;
     }
 //   
-//Mouse hover effects using OffsetOnHover class
-//These might be better suited for the TileFlip class... but here they are
+//Mouse Over detection setting OffsetOnHover state
     public void OnMouseOver() {
         if(active) {
-        	StopCoroutine(hover.Deactivate());
-        	StartCoroutine(hover.Activate());
+            hover.active = true;
         }
     }
-    public void OnMouseExit() { //Getting some edge cases where colliders aren't registering the mouse leaving? Or is it not stopping the coroutine how I think it is?
-    	StopCoroutine(hover.Activate());
-    	StartCoroutine(hover.Deactivate());
+    public void OnMouseExit() {
+        hover.active = false;
     }
 //
 }

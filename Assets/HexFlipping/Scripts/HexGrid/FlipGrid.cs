@@ -32,6 +32,7 @@ public class FlipGrid : MonoBehaviour {
     public List<HexSpace> hexGridContents = new List<HexSpace>();  //Stored list of all tiles in grid; HexSpaces
     public List<Actor> gridActors = new List<Actor>(); //Stored list of all the actors on the grid; Actors
 
+    bool gridLocked;
     bool won;
 
 //My singleton which does not completely remove human error, but is it egregious? 
@@ -152,7 +153,6 @@ public class FlipGrid : MonoBehaviour {
 //
 //Subscribed function, calculates adjacent hex spaces and exectues Flips them
     void UpdateAdjacent(HexSpace space, bool playerInput) {
-
         Vector2 originCoord = space.coordinate;
         Vector2[] adjacentCoord;
         if (originCoord.y % 2 == 0) { //Even rows
@@ -200,11 +200,15 @@ public class FlipGrid : MonoBehaviour {
             if (!space.occupied) //oops stay locked friend
                 space.GetComponent<TileFlip>().active = true;               
         }
+
+        gridLocked = false;
     }
     public void LockHexGrid() {
         foreach (HexSpace space in hexGridContents) {
             space.GetComponent<TileFlip>().active = false;
-        }           
+        }
+
+        gridLocked = true;
     }
 //
 }
