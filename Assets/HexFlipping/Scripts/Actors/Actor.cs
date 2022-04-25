@@ -20,6 +20,8 @@ public class Actor : MonoBehaviour {
     public bool takingTurn;
     [HideInInspector]
     public bool moving;
+    [HideInInspector]
+    bool moveStarted;
 
     [HideInInspector]
     public HexSpace targetSpace;
