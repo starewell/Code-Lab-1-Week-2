@@ -139,7 +139,7 @@ public class FlipGrid : MonoBehaviour {
             if (hexGridContents.Find(space => space.coordinate == coord) != null)
                 if (!hexGridContents.Find(space => space.coordinate == coord).occupied) { //Found this constructor thru microsoft docs, have never used it before
                     HexSpace adjSpace = hexGridContents.Find(space => space.coordinate == coord);
-                    StartCoroutine(adjSpace.GetComponent<TileFlip>().FlipTile(false));
+                    StartCoroutine(adjSpace.GetComponent<TileFlip>().FlipTile(false)); //Trigger TileFlip class FlipTile() function w/ false origin bool
                     yield return new WaitForSeconds(.1f);
                 }
         }

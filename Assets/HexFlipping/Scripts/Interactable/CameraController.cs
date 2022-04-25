@@ -19,10 +19,6 @@ public class CameraController : MonoBehaviour {
 		}
 	}
 
-	void FixedUpdate() {
-		
-    }
-
 	void Update() {
 	//Check for clicks, raycast, execute Interacable class function
 	    if(Input.GetMouseButtonDown(0)) {

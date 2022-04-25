@@ -34,7 +34,7 @@ public class TileFlip : Interactable {
 	protected override void Interact() {
 		base.Interact();
 
-		PlayerActionCallback?.Invoke(GetComponent<HexSpace>()); //Signals when the player has interacted with a Tile versus an Actor. Passing useless parameter... I should go to helpdesk
+		PlayerActionCallback?.Invoke(GetComponent<HexSpace>()); //Signals when the player has interacted with a Tile versus an Actor
 		StartCoroutine(FlipTile(true));
 	}
 
@@ -50,7 +50,6 @@ public class TileFlip : Interactable {
 		if (!origin) audioSource.volume *= 4;
 		anim.SetBool("Flip", false);
 
-		//hexSpace.FlipHexSpace(grid.gridDef.colors); these too lines are redundant, but I think I want this one
 		FlipCallback?.Invoke(hexSpace, playerInput);
 		yield return new WaitForSeconds(.125f);
 		if (origin) 
